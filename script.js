@@ -28,7 +28,7 @@ class Book
         return null;
     }
 
-    ChangeTreanslate(languge)
+    ChangeTreanslation(languge)
     {
         this.Title = `${this.Title} - (${languge})`;
     }
@@ -84,11 +84,16 @@ server.delete("/books/:id", (req, res) => {
 });
 
 server.patch("/books/:id/translate", (req, res) => {
-    const language = req.body;
+    const {language} = req.body;
     let book = ListOfBooks.find(book => book.Id === parseInt(req.params.id));
+    
+    if (!language || typeof language !== "string")
+        return res.status(404).json({Message:"Invalid or missing language"});
+
     if (!book)
         return res.status(404).json({Message:"Book is not exists"});
-    book.ChangeTreanslate("Arabic");
+
+    book.ChangeTreanslation(language);
     return res.json({book});
 });
 
